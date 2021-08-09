@@ -1,25 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 function App() {
-  const [bill, setBill] = useState("142.55");
-  const [custom, setCustom] = useState(false);
-  const [customValue, setCustomValue] = useState("");
-  const [tipPercent, setTipPercent] = useState("0.15");
-  const [person, setPerson] = useState("5");
-  const tipAmount = 0;
-  const total = 0;
+  let [bill, setBill] = useState("142.55");
+  let [custom, setCustom] = useState(false);
+  let [customValue, setCustomValue] = useState();
+  let [tipPercent, setTipPercent] = useState();
+  let [person, setPerson] = useState("5");
+  // const [{ tipAmount, total }, setForm] = useState({
+  //   tipAmount: 0,
+  //   total: 0,
+  // });
+
   const errMsg = "Can't be zero";
+
+  const customRef = useRef();
 
   const handleBill = (e) => {
     setBill(e.target.value);
   };
 
   const handleTips = (e) => {
+    setCustom(false);
     setTipPercent(e.target.value);
   };
 
   const handleCustomValue = (e) => {
-    setCustomValue(e.target.value);
+    let custValue = customRef.current.value;
+    setCustomValue(custValue);
   };
 
   const handlePerson = (e) => {
@@ -27,25 +34,63 @@ function App() {
   };
 
   const handleCustom = () => {
-    setCustom(!custom);
+    setCustom(true);
   };
 
-  const handleReset = () => {};
+  const handleReset = () => {
+    setBill(0);
+    setTipPercent(0);
+    setPerson(1);
+    setCustom(false);
+    setCustomValue(0);
+  };
 
-  console.log(person);
+  bill = Number(bill);
+  tipPercent = Number(tipPercent);
+  person = Number(person);
+  customValue = Number(customValue);
+
+  const tip = bill * tipPercent;
+  let tipAmount = (tip / person).toFixed(2);
+  let total = ((bill + tip) / person).toFixed(2);
+
+  // const handleFormChange = (e) => {
+  //   e.preventDefault();
+  //   const form = Object.fromEntries(new FormData(e.currentTarget).entries());
+  //   console.log(form);
+  //   const data = {
+  //     bill: Number(form.bill),
+  //     tips: Number(form.tips),
+  //     person: Number(form.person),
+  //     custom: Number(form.custom),
+  //   };
+
+  //   console.log(data);
+  // if (!data.person) return;
+
+  // const tip = data.bill * (data.tips / 100);
+  // const tipAmount = tip / data.person;
+  // const total = (data.bill + tip) / data.person;
+
+  // setForm({
+  //   tipAmount,
+  //   total,
+  // });
+  // };
 
   return (
     <div className="font-mono min-h-screen bg-gray-200 overflow-auto">
       <header className="mx-auto text-center py-12">
-        <h1 className="text-darkgraycyan1 w-4/5 mx-auto text-2xl tracking-xwide">
+        <h1 className="text-darkgraycyan1 w-4/5 mx-auto text-2xl tracking-xwidest">
           SPLI
         </h1>
-        <h1 className="text-darkgraycyan1 w-4/5 mx-auto text-2xl tracking-xwide">
+        <h1 className="text-darkgraycyan1 w-4/5 mx-auto text-2xl tracking-xwidest">
           TTER
         </h1>
       </header>
-      <section>
-        <div className="bg-white mx-2 sm:mx-20 sm:mb-8 md:p-8 p-5 sm:p-2 grid grid-cols-1 md:grid-cols-2 gap-10 rounded-2xl">
+      <main>
+        {/* <form> */}
+        <div className="bg-white mx-2 sm:mx-20 sm:mb-8 md:p-8 p-5 sm:p-2 grid grid-cols-1 lg:grid-cols-2 gap-10 rounded-2xl">
           <div className="flex flex-col">
             <div className="relative flex flex-col ">
               <label
@@ -81,62 +126,76 @@ function App() {
               <h5 className="ml-8 my-5 text-sm sm:text-lg text-darkgraycyan">
                 Select Tip %
               </h5>
-              <div className="grid grid-cols-2 gap-5 px-4">
-                <div className="">
-                  <label htmlFor="tip5">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 px-4 md:px-8 lg:px-4">
+                <div className="relative">
+                  <label>
                     <input
                       onChange={handleTips}
                       type="radio"
                       value="0.05"
                       className="appearance-none hidden peer"
                       name="tips"
-                      checked
-                    ></input>
+                    />
                     <div className="bg-verydarkcyan peer-checked:bg-darkgraycyan1 h-10 pt-1.5 rounded-lg text-white text-center text-lg w-full">
                       5%
                     </div>
                   </label>
                 </div>
                 <div className="relative">
-                  <label htmlFor="tip10">
+                  <label>
                     <input
                       onChange={handleTips}
                       type="radio"
                       value="0.1"
                       className="appearance-none hidden peer"
                       name="tips"
-                    ></input>
+                    />
                     <div className="bg-verydarkcyan peer-checked:bg-darkgraycyan1 h-10 pt-1.5 rounded-lg text-white text-center text-lg w-full">
                       10%
                     </div>
                   </label>
                 </div>
-                {/* <div>
-                  <button
-                    onClick={handleTips}
-                    value="0.15"
-                    className={`${btnActive} ? ${tipsActive} : ${tipsNotActive}`}
-                  >
-                    15%
-                  </button>
+                <div className="relative">
+                  <label>
+                    <input
+                      onChange={handleTips}
+                      type="radio"
+                      value="0.15"
+                      className="appearance-none hidden peer"
+                      name="tips"
+                    />
+                    <div className="bg-verydarkcyan peer-checked:bg-darkgraycyan1 h-10 pt-1.5 rounded-lg text-white text-center text-lg w-full">
+                      15%
+                    </div>
+                  </label>
                 </div>
-                <div>
-                  <button
-                    onClick={handleTips}
-                    value="0.25"
-                    className={`${btnActive} ? ${tipsActive} : ${tipsNotActive}`}
-                  >
-                    25%
-                  </button>
-                </div>
-                <div>
-                  <button
-                    onClick={handleTips}
-                    value="0.5"
-                    className={`${btnActive} ? ${tipsActive} : ${tipsNotActive}`}
-                  >
-                    50%
-                  </button>
+                <div className="relative">
+                  <label>
+                    <input
+                      onChange={handleTips}
+                      type="radio"
+                      value="0.25"
+                      className="appearance-none hidden peer"
+                      name="tips"
+                    />
+                    <div className="bg-verydarkcyan peer-checked:bg-darkgraycyan1 h-10 pt-1.5 rounded-lg text-white text-center text-lg w-full">
+                      25%
+                    </div>
+                  </label>
+                </div>{" "}
+                <div className="relative">
+                  <label>
+                    <input
+                      onChange={handleTips}
+                      type="radio"
+                      value="0.5"
+                      className="appearance-none hidden peer"
+                      name="tips"
+                    />
+                    <div className="bg-verydarkcyan peer-checked:bg-darkgraycyan1 h-10 pt-1.5 rounded-lg text-white text-center text-lg w-full">
+                      50%
+                    </div>
+                  </label>
                 </div>
                 <div className="relative">
                   <button
@@ -148,39 +207,47 @@ function App() {
                   {custom ? (
                     <>
                       {" "}
-                      <label htmlFor="customTips"></label>
-                      <input
-                        className="absolute w-4/5 focus:outline-none left-2 top-2 bg-lightgraycyan text-verydarkcyan text-right text-lg"
-                        onChange={handleCustomValue}
-                        value={customValue}
-                      ></input>{" "}
+                      <label>
+                        <input
+                          className="absolute w-4/5 focus:outline-none left-2 top-2 bg-lightgraycyan text-verydarkcyan text-right text-lg"
+                          onChange={handleCustomValue}
+                          ref={customRef}
+                          type="number"
+                          name="custom"
+                          value={customValue}
+                          min="0"
+                        />{" "}
+                      </label>
                     </>
                   ) : null}
-                </div> */}
+                </div>{" "}
               </div>
             </div>
 
-            <div className="relative flex flex-col">
-              <label
-                htmlFor="number"
-                className="my-5 mb-2 ml-8 text-sm sm:text-lg text-darkgraycyan"
-              >
-                Number of People
-                <span className="ml-8 text-red-500">
+            <div className="relative flex flex-col mt-5">
+              <div className="flex mb-5 justify-between items-center">
+                <label
+                  htmlFor="number"
+                  className="ml-8 text-sm sm:text-lg text-darkgraycyan"
+                >
+                  Number of People
+                </label>
+                <span className="mr-5 sm:mr-10 text-red-500">
                   {person === "0" ? errMsg : null}
                 </span>
-              </label>
+              </div>
+
               <input
                 onChange={handlePerson}
                 className="mx-auto text-right pr-8 font-bold w-11/12 h-10 text-lg bg-gray-200 text-verydarkcyan rounded-md"
-                id="people"
-                name="people"
+                id="person"
+                name="person"
                 type="number"
                 value={person}
                 min="0"
               ></input>
               <svg
-                className="absolute top-12 mt-2.5 sm:mt-5 md:mt-2.5 left-12"
+                className="absolute top-12 mt-2.5 sm:mt-2.5 left-12"
                 xmlns="http://www.w3.org/2000/svg"
                 width="13"
                 height="16"
@@ -192,11 +259,11 @@ function App() {
               </svg>
             </div>
           </div>
-          <div className="bg-verydarkcyan text-white text-lg py-2 sm:py-7 mx-5 xl:px-20 rounded-lg">
+          <div className="bg-verydarkcyan text-white text-lg py-2 px-4 sm:px-12 lg:px-4 sm:py-7 mx-5 xl:px-20 rounded-lg">
             <div className="relative flex justify-between items-center">
               <h2 className="mt-10 ml-5 sm:ml-10">Tip Amount</h2>
               <h2 className="text-2xl sm:text-3xl text-darkgraycyan2 mt-10 mr-5 sm:mr-10">
-                $4.55
+                ${isNaN(tipAmount) || tipAmount === 0 ? "0.00" : tipAmount}
               </h2>
               <span className="absolute top-16 left-5 sm:left-10 text-sm sm:text-md text-darkgraycyan2">
                 /person
@@ -205,20 +272,24 @@ function App() {
             <div className="relative flex justify-between items-center my-7">
               <h2 className="mt-10 ml-5 sm:ml-10">Total</h2>
               <h2 className="text-2xl sm:text-3xl text-darkgraycyan2 mt-10 mr-5 sm:mr-10">
-                $32.79
+                ${isNaN(total) || total === 0 ? "0.00" : total}
               </h2>
               <span className="absolute top-16 left-5 sm:left-10 text-sm sm:text-md text-darkgraycyan2">
                 /person
               </span>
             </div>
             <div className="justify-center flex w-full px-12 h-10 mt-20 mb-5 sm:mt-28">
-              <button className="bg-darkgraycyan2 rounded-lg w-full font-bold text-verydarkcyan">
+              <button
+                onClick={() => handleReset()}
+                className="bg-darkgraycyan2 rounded-lg w-full font-bold text-verydarkcyan"
+              >
                 RESET
               </button>
             </div>
           </div>
         </div>
-      </section>
+        {/* </form> */}
+      </main>
     </div>
   );
 }

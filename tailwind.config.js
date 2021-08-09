@@ -3,6 +3,9 @@ module.exports = {
   purge: ["index.html", "./src/**/*.{js,jsx,ts,tsx,vue,html}"],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    letterSpacing: {
+      xwidest: "1em",
+    },
     extend: {
       colors: {
         strongCyan: "hsl(172, 67%, 45%)",
